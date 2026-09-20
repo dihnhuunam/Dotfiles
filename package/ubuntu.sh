@@ -74,7 +74,6 @@ cpp_packages=(
   gdb
   valgrind
   clang
-  clangd
   clang-format
   clang-tidy
   lldb
@@ -87,7 +86,6 @@ python_packages=(
   python3-pip
   python3-dev
   python3-venv
-  python3-pylsp
   pipx
 )
 
@@ -112,13 +110,9 @@ boost_packages=(
 )
 
 useful_packages=(
-  ripgrep
-  fd-find
   fzf
   tree
   htop
-  neovim
-  tree-sitter-cli
   fastfetch
   ibus-unikey
   cloud-guest-utils

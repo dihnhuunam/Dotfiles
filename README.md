@@ -30,6 +30,7 @@ Personal dotfiles for setting up an Ubuntu development environment. This reposit
 │   └── log.sh
 ├── package
 │   ├── font.sh
+│   ├── nvim.sh
 │   ├── ubuntu.sh
 │   ├── wezterm.sh
 │   └── zsh.sh
@@ -60,10 +61,11 @@ After the script finishes, open a new terminal or log out and back in so the def
 1. Installs Ubuntu packages from `package/ubuntu.sh`.
 2. Restarts IBus when `ibus` is installed.
 3. Installs JetBrainsMono Nerd Font.
-4. Installs Oh My Zsh, Zsh plugins, and changes the default shell to Zsh.
-5. Installs WezTerm from the official WezTerm apt repository.
-6. Attempts to set WezTerm as the default terminal on GNOME.
-7. Removes the existing `~/.zshrc` and uses GNU Stow to link the `zsh`, `wezterm`, and `nvim` configuration packages into `$HOME`.
+4. Installs Neovim and its dependencies from `package/nvim.sh`.
+5. Installs Oh My Zsh, Zsh plugins, and changes the default shell to Zsh.
+6. Installs WezTerm from the official WezTerm apt repository.
+7. Attempts to set WezTerm as the default terminal on GNOME.
+8. Removes the existing `~/.zshrc` and uses GNU Stow to link the `zsh`, `wezterm`, and `nvim` configuration packages into `$HOME`.
 
 ## Installed Packages
 
@@ -71,12 +73,14 @@ After the script finishes, open a new terminal or log out and back in so the def
 
 - Basics: `git`, `gh`, `curl`, `wget`, `unzip`, `zip`, `tar`, `ca-certificates`, `gpg`, `fontconfig`, `stow`, `zsh`.
 - GitLab CLI: `glab`; Ubuntu 24.04 and newer use `apt`, older Ubuntu versions use `snap`.
-- C/C++: `build-essential`, `cmake`, `ninja-build`, `pkg-config`, `ccache`, `gdb`, `valgrind`, `clang`, `clangd`, `clang-format`, `clang-tidy`, `lldb`, `cppcheck`.
-- Python: `python3`, `python3-full`, `python3-pip`, `python3-dev`, `python3-venv`, `python3-pylsp`, `pipx`, plus `cmakelang` (including `cmake-format`) through `pipx`.
+- C/C++: `build-essential`, `cmake`, `ninja-build`, `pkg-config`, `ccache`, `gdb`, `valgrind`, `clang`, `clang-format`, `clang-tidy`, `lldb`, `cppcheck`.
+- Python: `python3`, `python3-full`, `python3-pip`, `python3-dev`, `python3-venv`, `pipx`, plus `cmakelang` (including `cmake-format`) through `pipx`.
 - Qt runtime/helpers: `libxcb-cursor0`, `libxcb-cursor-dev`.
 - OpenGL: `libgl1-mesa-dev`, `libglu1-mesa-dev`, `mesa-common-dev`, `mesa-utils`, `freeglut3-dev`, `libglfw3-dev`, `libglew-dev`, `libftgl-dev`.
 - Boost: `libboost-all-dev`.
-- Utilities: `ripgrep`, `fd-find`, `fzf`, `tree`, `htop`, `neovim`, `tree-sitter-cli`, `fastfetch`, `ibus-unikey`, `cloud-guest-utils`, `gparted`, `open-vm-tools`, `open-vm-tools-desktop`, `openssh-server`.
+- Utilities: `fzf`, `tree`, `htop`, `fastfetch`, `ibus-unikey`, `cloud-guest-utils`, `gparted`, `open-vm-tools`, `open-vm-tools-desktop`, `openssh-server`.
+
+`package/nvim.sh` installs `neovim`, `git`, `build-essential` (C compiler and make), `ripgrep`, `fd-find`, `tree-sitter-cli`, `clangd`, `python3-pylsp`, `xclip` (X11 clipboard), `wl-clipboard` (Wayland clipboard), `lazygit`, `gdu`, `python3`, `python-is-python3` (the `python` command), `nodejs`, `npm`, `curl`, and `ca-certificates`. Shared tools also remain in the Ubuntu package groups. The script installs bottom (`btm`) 0.14.9 from its [official Debian package](https://github.com/ClementTsang/bottom#debian--ubuntu) for amd64, arm64, or armhf when `btm` is missing. Package availability depends on the Ubuntu release; `lazygit` requires Ubuntu 25.10 or newer when using the default repositories. [WezTerm](https://wezterm.org/), installed separately by `install.sh`, provides true color support. Installing these tools does not add toggle-terminal key mappings to the Neovim configuration. To install Neovim dependencies separately, run `bash package/nvim.sh`.
 
 ## Zsh
 
@@ -138,7 +142,7 @@ The `nvim` Stow package links its configuration into `~/.config/nvim`.
 - Editor defaults include relative line numbers, four-space indentation, persistent undo, and Space as the leader key.
 - Plugins include Catppuccin Macchiato, Neo-tree, and Telescope with the native FZF sorter.
 - Treesitter enables syntax highlighting and indentation for C, C++, and Python, with `c`, `cpp`, `python`, `lua`, `vim`, and `vimdoc` parsers installed automatically.
-- The Treesitter configuration uses the `master` branch for Neovim 0.10/0.11 and tree-sitter CLI 0.25.x compatibility; see the [upstream requirements](https://github.com/nvim-treesitter/nvim-treesitter/blob/master/README.md#requirements). `package/ubuntu.sh` installs `tree-sitter-cli` through apt (the executable is `tree-sitter`); older Ubuntu releases may require a separate CLI installation if the package is unavailable.
+- The Treesitter configuration uses the `master` branch for Neovim 0.10/0.11 and tree-sitter CLI 0.25.x compatibility; see the [upstream requirements](https://github.com/nvim-treesitter/nvim-treesitter/blob/master/README.md#requirements). `package/nvim.sh` installs `tree-sitter-cli` through apt (the executable is `tree-sitter`); older Ubuntu releases may require a separate CLI installation if the package is unavailable.
 - The first launch needs internet access to download the plugin manager and plugins. The native sorter builds with `make`; the installer includes `build-essential` and `ripgrep` for building and searching.
 
 After changing the Treesitter plugin branch, run `:Lazy sync` and restart Neovim. Use `:TSInstallInfo` to check parsers and `:TSUpdate` to update them. The first parser installation needs internet access and a C compiler, provided by `build-essential`.

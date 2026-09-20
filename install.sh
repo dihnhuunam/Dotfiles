@@ -47,6 +47,9 @@ fi
 info "Installing Fonts..."
 run_script "$SCRIPT_DIR/package/font.sh"
 
+info "Installing Neovim..."
+run_script "$SCRIPT_DIR/package/nvim.sh"
+
 info "Installing Zsh..."
 run_script "$SCRIPT_DIR/package/zsh.sh"
 
