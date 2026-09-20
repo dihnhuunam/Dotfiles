@@ -1,7 +1,7 @@
 return {
     {
         "nvim-neo-tree/neo-tree.nvim",
-        branch = "v3.x",
+        branch = "main",
 
         -- Dependencies required by Neo-tree
         dependencies = {

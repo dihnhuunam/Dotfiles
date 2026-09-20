@@ -1,49 +1,49 @@
 return {
-    "neovim/nvim-lspconfig",
-    lazy = false,
-    config = function()
-        vim.lsp.config("clangd", {
-            cmd = { "clangd", "--background-index", "--clang-tidy" },
-            filetypes = { "c", "cpp" },
-            root_markers = { ".clangd", "compile_commands.json", "compile_flags.txt", "CMakeLists.txt", ".git" },
-        })
+    {
+        "neovim/nvim-lspconfig",
 
-        vim.lsp.config("pylsp", {
-            cmd = { "pylsp" },
-            filetypes = { "python" },
-            root_markers = { "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
-        })
+        config = function()
+            vim.lsp.config("clangd", {
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--query-driver=/usr/bin/c++",
+                    "--clang-tidy",
+                    "--completion-style=detailed",
+                },
+            })
 
-        vim.diagnostic.config({
-            virtual_text = true,
-            severity_sort = true,
-            float = { border = "rounded" },
-        })
+            vim.lsp.enable("clangd")
 
-        vim.api.nvim_create_autocmd("LspAttach", {
-            group = vim.api.nvim_create_augroup("UserLspConfig", { clear = true }),
-            callback = function(event)
-                local client = vim.lsp.get_client_by_id(event.data.client_id)
-                local function map(keys, action, description)
-                    vim.keymap.set("n", keys, action, { buffer = event.buf, desc = description })
-                end
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local opts = {
+                        buffer = args.buf,
+                        silent = true,
+                    }
 
-                map("gd", vim.lsp.buf.definition, "Go to definition")
-                map("gr", vim.lsp.buf.references, "Find references")
-                map("K", vim.lsp.buf.hover, "Show documentation")
-                map("<leader>rn", vim.lsp.buf.rename, "Rename symbol")
-                map("<leader>ca", vim.lsp.buf.code_action, "Code actions")
-                map("<leader>d", vim.diagnostic.open_float, "Show diagnostics")
-                map("<leader>lf", function()
-                    vim.lsp.buf.format({ bufnr = event.buf, async = true })
-                end, "Format buffer")
+                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+                    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+                    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
 
-                if client and client:supports_method("textDocument/completion") then
-                    vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-                end
-            end,
-        })
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
 
-        vim.lsp.enable({ "clangd", "pylsp" })
-    end,
+                    vim.keymap.set(
+                        "n",
+                        "<leader>rn",
+                        vim.lsp.buf.rename,
+                        opts
+                    )
+
+                    vim.keymap.set(
+                        "n",
+                        "<leader>ca",
+                        vim.lsp.buf.code_action,
+                        opts
+                    )
+                end,
+            })
+        end,
+    },
 }
