@@ -87,6 +87,7 @@ python_packages=(
   python3-pip
   python3-dev
   python3-venv
+  python3-pylsp
   pipx
 )
 
@@ -117,6 +118,7 @@ useful_packages=(
   tree
   htop
   neovim
+  tree-sitter-cli
   fastfetch
   ibus-unikey
   cloud-guest-utils

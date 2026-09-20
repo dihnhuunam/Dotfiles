@@ -73,5 +73,6 @@ info "Removing existing .zshrc..."
 rm -f "$HOME/.zshrc"
 stow_package "zsh"
 stow_package "wezterm"
+stow_package "nvim"
 
 success "Done. Please restart the terminal."
