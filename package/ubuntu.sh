@@ -35,6 +35,7 @@ basic_packages=(
   openssh-server
   open-vm-tools
   open-vm-tools-desktop
+  sqlitebrowser
 )
 
 useful_packages=(
