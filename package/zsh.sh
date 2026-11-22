@@ -47,23 +47,38 @@ install_plugin() {
 
 set_default_shell() {
   local zsh_path account_shell account_name
+
   zsh_path="$(command -v zsh)"
   account_name="$(id -un)"
   account_shell="$(getent passwd "$account_name" | cut -d: -f7)"
+
   if [[ -z "$account_shell" ]]; then
-    error "Cannot determine the login shell for $account_name."
+    error "Cannot determine login shell."
     return 1
   fi
+
   if [[ "$account_shell" == "$zsh_path" || "$account_shell" -ef "$zsh_path" ]]; then
-    info "Default shell is already Zsh. Skipping."
-    return
+    info "Default shell is already Zsh."
+    return 0
   fi
+
   if ! grep -Fxq "$zsh_path" /etc/shells; then
-    error "Zsh is not listed in /etc/shells: $zsh_path"
+    error "Zsh is not listed in /etc/shells."
     return 1
   fi
-  info "Changing default shell to Zsh (chsh may request your password)..."
+
+  info "Changing default shell to Zsh..."
   chsh -s "$zsh_path"
+
+  # Verify
+  account_shell="$(getent passwd "$account_name" | cut -d: -f7)"
+
+  if [[ "$account_shell" != "$zsh_path" && ! "$account_shell" -ef "$zsh_path" ]]; then
+    error "Failed to change default shell."
+    return 1
+  fi
+
+  success "Default shell changed to $account_shell"
 }
 
 main() {
